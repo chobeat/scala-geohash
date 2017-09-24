@@ -29,8 +29,10 @@ object GeoHash {
   }
 
   private def divideRangeByValue(x: Double,
-                                 range: (Double, Double)): (Double, Double) = {
-    val mid = middle(range)
+                                 range: (Double, Double),
+                                 mid:Double
+                                ): (Double, Double) = {
+
     if (x >= mid) {
       (mid, range._2)
     } else {
@@ -42,15 +44,18 @@ object GeoHash {
                                   ranges: Ranges,
                                   isEven: Boolean,
                                   base32CharIndex: Int): (Ranges, Int) = {
+
     val (changingRange, staticRange): Ranges =
       if (isEven) ranges.swap else ranges
     val changingCoord: Double =
       if (isEven) point.lon else point.lat
 
+    val mid =  middle(
+      changingRange)
+
     val newRanges =
-      (divideRangeByValue(changingCoord, changingRange), staticRange)
-    val newIndex = (base32CharIndex << 1) | (if (changingCoord >= middle(
-                                                   changingRange)) 1
+      (divideRangeByValue(changingCoord, changingRange,mid), staticRange)
+    val newIndex = (base32CharIndex << 1) | (if (changingCoord >= mid) 1
                                              else 0)
     val adjustedRange = if (isEven) newRanges.swap else newRanges
     (adjustedRange, newIndex)
