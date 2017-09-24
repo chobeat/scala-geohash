@@ -19,6 +19,9 @@ object ImplicitConversions {
 object GeoHash {
   private val BASE_32 = "0123456789bcdefghjkmnpqrstuvwxyz"
 
+  type Range = (Double, Double)
+  type Ranges = (Range, Range)
+
   private def middle(range: (Double, Double)) = {
     val (lat, lon) = range
     (lat + lon) / 2
@@ -35,10 +38,27 @@ object GeoHash {
     }
   }
 
+  private def getNewRangeAndIndex(point: GeoPoint,
+                                  ranges: Ranges,
+                                  isEven: Boolean,
+                                  base32CharIndex: Int): (Ranges, Int) = {
+    val (changingRange, staticRange): Ranges =
+      if (isEven) ranges.swap else ranges
+    val changingCoord: Double =
+      if (isEven) point.lon else point.lat
+
+    val newRanges =
+      (divideRangeByValue(changingCoord, changingRange), staticRange)
+    val newIndex = (base32CharIndex << 1) | (if (changingCoord >= middle(
+                                                   changingRange)) 1
+                                             else 0)
+    val adjustedRange = if (isEven) newRanges.swap else newRanges
+    (adjustedRange, newIndex)
+  }
+
   def encodeGeohashRec(point: GeoPoint,
                        partialGeohash: String = "",
-                       rangeLat: (Double, Double),
-                       rangeLon: (Double, Double),
+                       ranges: Ranges,
                        geohashLength: Int,
                        isEven: Boolean,
                        bit: Int,
@@ -46,27 +66,13 @@ object GeoHash {
     if (partialGeohash.length == geohashLength)
       partialGeohash
     else {
-      val (newRangeLat, newRangeLon, newIndex) =
-        if (isEven) {
-          val mid = middle(rangeLon)
-          val newRangeLon = divideRangeByValue(point.lon, rangeLon)
-          val newRangeLat = rangeLat
-          val newIndex = (base32CharIndex << 1) | (if (point.lon >= mid) 1
-                                                   else 0)
-          (newRangeLat, newRangeLon, newIndex)
-        } else {
-          val mid = middle(rangeLat)
-          val newRangeLat = divideRangeByValue(point.lat, rangeLat)
-          val newRangeLon = rangeLon
-          val newIndex = (base32CharIndex << 1) | (if (point.lat >= mid) 1
-                                                   else 0)
-          (newRangeLat, newRangeLon, newIndex)
-        }
+      val (newRanges, newIndex) =
+        getNewRangeAndIndex(point, ranges, isEven, base32CharIndex)
+
       if (bit < 4)
         encodeGeohashRec(point,
                          partialGeohash,
-                         newRangeLat,
-                         newRangeLon,
+                         newRanges,
                          geohashLength,
                          !isEven,
                          bit + 1,
@@ -74,8 +80,7 @@ object GeoHash {
       else
         encodeGeohashRec(point,
                          partialGeohash + BASE_32.charAt(newIndex),
-                         newRangeLat,
-                         newRangeLon,
+                         newRanges,
                          geohashLength,
                          !isEven,
                          bit = 0,
@@ -85,12 +90,11 @@ object GeoHash {
   }
 
   def encodeGeohash(p: GeoPoint, length: Int): String = {
-    val latRange = (-90.0, 90.0)
-    val lonRange = (-180.0, 180.0)
+    val rangeLat = (-90.0, 90.0)
+    val rangeLon = (-180.0, 180.0)
     encodeGeohashRec(p,
                      "",
-                     latRange,
-                     lonRange,
+                     (rangeLat, rangeLon),
                      isEven = true,
                      bit = 0,
                      base32CharIndex = 0,
