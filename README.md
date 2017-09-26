@@ -1,0 +1,1 @@
+scala-geohash aims to provide the basic tools to work with Geohashes in idiomatic Scala.
