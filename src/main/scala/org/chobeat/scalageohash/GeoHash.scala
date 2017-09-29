@@ -28,9 +28,9 @@ object GeoHash {
 
   }
 
-  private def divideRangeByValue(x: Double,
-                                 range: (Double, Double),
-                                 mid: Double): (Double, Double) = {
+  private def splitRangeByValue(x: Double,
+                                range: (Double, Double),
+                                mid: Double): (Double, Double) = {
 
     if (x >= mid) {
       (mid, range._2)
@@ -52,7 +52,7 @@ object GeoHash {
     val mid = rangeMid(changingRange)
 
     val newRanges =
-      (divideRangeByValue(changingCoord, changingRange, mid), staticRange)
+      (splitRangeByValue(changingCoord, changingRange, mid), staticRange)
     val newIndex = (base32CharIndex << 1) | (if (changingCoord >= mid) 1
                                              else 0)
     val adjustedRange = if (isEven) newRanges.swap else newRanges
@@ -105,7 +105,7 @@ object GeoHash {
 
   }
 
-  private def divideRangeByBit(bit: Int, range: Range): Range = {
+  private def splitRangeByBit(bit: Int, range: Range): Range = {
     val mid = rangeMid(range)
     if (bit > 0) (mid, range._2)
     else (range._1, mid)
@@ -125,27 +125,25 @@ object GeoHash {
     }
   }
 
-  def decodeDigit(index: Int, ranges: Ranges, isEven: Boolean): Ranges = {
-    var j = 4
-    var r: Ranges = ranges
-    var isEvenT=isEven
-    while ({
-      j >= 0
-    }) {
+  def decodeDigit(index: Int,
+                  ranges: Ranges,
+                  isEven: Boolean,
+                  j: Int = 4): Ranges = {
+    if (j == -1)
+      ranges
+    else {
       val bitN = index >> j & 1
-      val (latRange, lonRange) = r
-      r = if (isEvenT) {
+      val (latRange, lonRange) = ranges
+      val splitRange = if (isEven) {
 
-        // longitude
-        (latRange, divideRangeByBit(bitN, lonRange))
+        (latRange, splitRangeByBit(bitN, lonRange))
 
       } else {
-        (divideRangeByBit(bitN, latRange), lonRange)
+        (splitRangeByBit(bitN, latRange), lonRange)
       }
-      isEvenT = !isEvenT
-      j=j-1
+      decodeDigit(index, splitRange, !isEven, j - 1)
     }
-    r
+
   }
 
   def decodeGeohash(geohash: String): Ranges = {
