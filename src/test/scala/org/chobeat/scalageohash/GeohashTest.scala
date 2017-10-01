@@ -1,24 +1,26 @@
 package org.chobeat.scalageohash
 
-import org.scalactic.TolerantNumerics
 import org.scalatest.{FlatSpec, Matchers}
-import ImplicitConversions._
 import org.chobeat.scalageohash.GeoHash.BoxRange
+import ImplicitConversions._
 class GeohashTest extends FlatSpec with Matchers {
 
   "encodeGeohash" should "return a valid geohash for first cell" in {
     val p = GeoPoint(-90.0, -180.00)
-    GeoHash.encodeGeohash(p, 8) should be("00000000")
+    val g:GeoHash = GeoHash.encodeGeohash(p, 8)
+    g.geohashString should be("00000000")
 
   }
   it should "return a valid geohash for last cell" in {
     val p = GeoPoint(90.0, 180.00)
-    GeoHash.encodeGeohash(p, 8) should be("zzzzzzzz")
+    val g:GeoHash = GeoHash.encodeGeohash(p, 8)
+    g.geohashString should be("zzzzzzzz")
 
   }
   it should "return a valid geohash for a random position" in {
     val p = GeoPoint(-23, -12)
-    GeoHash.encodeGeohash(p, 12) should be("7ezmnuvz79pr")
+    val g:GeoHash =GeoHash.encodeGeohash(p, 12)
+    g.geohashString should be("7ezmnuvz79pr")
 
   }
 
@@ -51,5 +53,9 @@ class GeohashTest extends FlatSpec with Matchers {
 
   }
 
+  "GeoHash class" should "be implicitely converted to a string" in {
+    val g:String = new GeoHash("0123")
+    g shouldBe "0123"
 
+  }
 }

@@ -1,7 +1,12 @@
 package org.chobeat.scalageohash
 
+import org.chobeat.scalageohash.GeoHash.BoxRange
 
-class GeoHash
+class GeoHash(val geohashString: String) {
+  val boxRange: BoxRange = GeoHash.decodeGeohash(geohashString)
+
+
+}
 
 object GeoHash {
   private val BASE_32 = "0123456789bcdefghjkmnpqrstuvwxyz"
@@ -112,17 +117,17 @@ object GeoHash {
     * @param length precision to use for encoding
     * @return
     */
-  def encodeGeohash(point: GeoPoint, length: Int): String = {
+  def encodeGeohash(point: GeoPoint, length: Int): GeoHash = {
     val rangeLat: Range = (-90.0, 90.0)
     val rangeLon: Range = (-180.0, 180.0)
-    encodeGeohashRec(point,
-                     "",
-                     (rangeLat, rangeLon),
-                     isEven = true,
-                     bit = 0,
-                     base32CharIndex = 0,
-                     geohashLength = length)
-
+    val geohash: String = encodeGeohashRec(point,
+                                           "",
+                                           (rangeLat, rangeLon),
+                                           isEven = true,
+                                           bit = 0,
+                                           base32CharIndex = 0,
+                                           geohashLength = length)
+    new GeoHash(geohash)
   }
 
   private def decodeGeohashRec(geoHash: String,
