@@ -3,8 +3,20 @@ package org.chobeat.scalageohash
 import org.chobeat.scalageohash.GeoHash.BoxRange
 
 class GeoHash(val geohashString: String) {
-  val boxRange: BoxRange = GeoHash.decodeGeohash(geohashString)
+  lazy val boxRange: BoxRange = GeoHash.decodeGeohash(geohashString)
 
+  /**
+    * The geohash box represented as a list of points
+    */
+  lazy val boxPoints: Seq[GeoPoint] = {
+    val (latB, latE, lonB, lonE) = boxRange
+    Seq(
+      GeoPoint(latB, lonB),
+      GeoPoint(latB, lonE),
+      GeoPoint(latE, lonE),
+      GeoPoint(latE, lonB),
+    )
+  }
 
 }
 
