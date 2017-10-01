@@ -22,6 +22,9 @@ class GeoHash(val geohashString: String) {
 }
 
 object GeoHash {
+  // Inspired by the MIT licensed implementation by Chris Veness from:
+  // http://www.movable-type.co.uk/scripts/geohash.html
+
   private val BASE_32 = "0123456789bcdefghjkmnpqrstuvwxyz"
 
   // describes a latitude or longitude range by its lower bound (left) and upper bound (right)
