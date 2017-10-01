@@ -9,7 +9,7 @@ class GeoHash(val geohashString: String) {
     * The geohash box represented as a list of points
     */
   lazy val boxPoints: Seq[GeoPoint] = {
-    val (latB, latE, lonB, lonE) = boxRange
+    val ((latB, latE), (lonB, lonE)) = boxRange
     Seq(
       GeoPoint(latB, lonB),
       GeoPoint(latB, lonE),
@@ -18,6 +18,7 @@ class GeoHash(val geohashString: String) {
     )
   }
 
+  lazy val centroid: GeoPoint = GeoHash.boxMid(boxRange)
 }
 
 object GeoHash {
@@ -30,12 +31,22 @@ object GeoHash {
   type BoxRange = (Range, Range)
 
   /**
-    * Takes the middle value of a Range
+    * Computes the middle value of a Range
     * @param range
     * @return
     */
   private def rangeMid(range: (Double, Double)): Double =
     (range._1 + range._2) / 2
+
+  /**
+    * Computes the center point of a BoxRange
+    * @param boxRange
+    * @return
+    */
+  private def boxMid(boxRange: BoxRange): GeoPoint = {
+    val (latRange, lonRange) = boxRange
+    GeoPoint(rangeMid(latRange), rangeMid(lonRange))
+  }
 
   /**
     *  Splits a range given the value of the coordinate along which we want to split the range
@@ -122,6 +133,9 @@ object GeoHash {
     }
 
   }
+
+  def apply(geohashString: String) = new GeoHash(geohashString)
+
 
   /**
     * Encodes a GeoPoint as a 32-bit geohash

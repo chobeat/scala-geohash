@@ -7,19 +7,19 @@ class GeohashTest extends FlatSpec with Matchers {
 
   "encodeGeohash" should "return a valid geohash for first cell" in {
     val p = GeoPoint(-90.0, -180.00)
-    val g:GeoHash = GeoHash.encodeGeohash(p, 8)
+    val g: GeoHash = GeoHash.encodeGeohash(p, 8)
     g.geohashString should be("00000000")
 
   }
   it should "return a valid geohash for last cell" in {
     val p = GeoPoint(90.0, 180.00)
-    val g:GeoHash = GeoHash.encodeGeohash(p, 8)
+    val g: GeoHash = GeoHash.encodeGeohash(p, 8)
     g.geohashString should be("zzzzzzzz")
 
   }
   it should "return a valid geohash for a random position" in {
     val p = GeoPoint(-23, -12)
-    val g:GeoHash =GeoHash.encodeGeohash(p, 12)
+    val g: GeoHash = GeoHash.encodeGeohash(p, 12)
     g.geohashString should be("7ezmnuvz79pr")
 
   }
@@ -54,8 +54,16 @@ class GeohashTest extends FlatSpec with Matchers {
   }
 
   "GeoHash class" should "be implicitely converted to a string" in {
-    val g:String = new GeoHash("0123")
+    val g: String = new GeoHash("0123")
     g shouldBe "0123"
+
+  }
+
+  "GeoHash centroid" should "be the center point of the box corresponding to a geohash" in {
+    val geohash = GeoHash("5667gf")
+    val (lat, lon): (Double, Double) = geohash.centroid
+    assert(lat === -76.67083740 +- 1)
+    assert(lon === -30.41564941 +- 1)
 
   }
 }
