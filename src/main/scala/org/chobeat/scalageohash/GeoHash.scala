@@ -1,9 +1,7 @@
 package org.chobeat.scalageohash
 
-object ImplicitConversions {
-  implicit def point2Tuple(p: GeoPoint): (Double, Double) =
-    (p.lat, p.lon)
-}
+
+class GeoHash
 
 object GeoHash {
   private val BASE_32 = "0123456789bcdefghjkmnpqrstuvwxyz"

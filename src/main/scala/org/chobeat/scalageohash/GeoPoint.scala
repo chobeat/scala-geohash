@@ -7,3 +7,4 @@ case class GeoPoint(lat: Double, lon: Double) {
   }
 
 }
+
