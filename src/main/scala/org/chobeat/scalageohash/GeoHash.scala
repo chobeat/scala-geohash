@@ -1,5 +1,6 @@
 package org.chobeat.scalageohash
 
+import ImplicitConversions._
 import org.chobeat.scalageohash.GeoHash.BoxRange
 
 class GeoHash(val geohashString: String) {
@@ -19,6 +20,10 @@ class GeoHash(val geohashString: String) {
   }
 
   lazy val centroid: GeoPoint = GeoHash.boxMid(boxRange)
+
+  lazy val neighbors: NeighborsSet = ???
+
+  override def toString: String = geohashString
 }
 
 object GeoHash {
@@ -139,7 +144,6 @@ object GeoHash {
 
   def apply(geohashString: String) = new GeoHash(geohashString)
 
-
   /**
     * Encodes a GeoPoint as a 32-bit geohash
     * @param point a point to encode
@@ -213,5 +217,40 @@ object GeoHash {
 
     decodeGeohashRec(geohash, (rangeLat, rangeLon), isEven = true)
 
+  }
+
+  val neighbor: Map[Direction, List[String]] = Map(
+    North -> List("p0r21436x8zb9dcf5h7kjnmqesgutwvy",
+                  "bc01fg45238967deuvhjyznpkmstqrwx"),
+    South -> List("14365h7k9dcfesgujnmqp0r2twvyx8zb",
+                  "238967debc01fg45kmstqrwxuvhjyznp"),
+    East -> List("bc01fg45238967deuvhjyznpkmstqrwx",
+                 "p0r21436x8zb9dcf5h7kjnmqesgutwvy"),
+    West -> List("238967debc01fg45kmstqrwxuvhjyznp",
+                 "14365h7k9dcfesgujnmqp0r2twvyx8zb")
+  )
+  val border: Map[Direction, List[String]] = Map(
+    North -> List("prxz", "bcfguvyz"),
+    South -> List("028b", "0145hjnp"),
+    East -> List("bcfguvyz", "prxz"),
+    West -> List("0145hjnp", "028b")
+  )
+
+  def getNeighbour(geoHash: String, direction: Direction): GeoHash = {
+
+    val last = geoHash.last
+    val parentString = geoHash.reverse.tail.reverse
+    val t = geoHash.length % 2
+
+    val parent: GeoHash =
+      if (border(direction)(t).contains(last) && parentString.geohashString.nonEmpty)
+        getNeighbour(parentString, direction)
+      else
+        parentString
+
+    val magicMapChar = neighbor(direction)(t)
+    val neighbourLastDigit = BASE_32(magicMapChar indexOf last).toString
+
+    parent + neighbourLastDigit
   }
 }
