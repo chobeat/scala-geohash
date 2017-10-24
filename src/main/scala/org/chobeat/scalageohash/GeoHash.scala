@@ -21,7 +21,7 @@ class GeoHash(val geohashString: String) {
 
   lazy val centroid: GeoPoint = GeoHash.boxMid(boxRange)
 
-  lazy val neighbors: NeighborsSet = ???
+  lazy val neighbors: NeighborsSet = NeighborsSet(geohashString)
 
   override def toString: String = geohashString
 }
