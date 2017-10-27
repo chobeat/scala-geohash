@@ -237,20 +237,23 @@ object GeoHash {
   )
 
   def getNeighbour(geoHash: String, direction: Direction): GeoHash = {
+    if (direction == Center)
+      geoHash
+    else {
+      val last = geoHash.last
+      val parentString = geoHash.reverse.tail.reverse
+      val t = geoHash.length % 2
 
-    val last = geoHash.last
-    val parentString = geoHash.reverse.tail.reverse
-    val t = geoHash.length % 2
+      val parent: GeoHash =
+        if (border(direction)(t).contains(last) && parentString.geohashString.nonEmpty)
+          getNeighbour(parentString, direction)
+        else
+          parentString
 
-    val parent: GeoHash =
-      if (border(direction)(t).contains(last) && parentString.geohashString.nonEmpty)
-        getNeighbour(parentString, direction)
-      else
-        parentString
+      val magicMapChar = neighbor(direction)(t)
+      val neighbourLastDigit = BASE_32(magicMapChar indexOf last).toString
 
-    val magicMapChar = neighbor(direction)(t)
-    val neighbourLastDigit = BASE_32(magicMapChar indexOf last).toString
-
-    parent + neighbourLastDigit
+      parent + neighbourLastDigit
+    }
   }
 }

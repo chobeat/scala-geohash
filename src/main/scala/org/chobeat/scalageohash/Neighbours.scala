@@ -1,29 +1,25 @@
 package org.chobeat.scalageohash
+import ImplicitConversions._
+case class Neighbour[T <: Direction](direction: Direction,sourceGeoHash: GeoHash){
 
-case class Neighbour[T <: Direction](direction: Direction)(geoHash: GeoHash)
-
-case class NeighborsSet(center: Neighbour[Center.type],
-                        north: Neighbour[North.type],
-                        south: Neighbour[South.type],
-                        west: Neighbour[West.type],
-                        east: Neighbour[East.type],
-                        northEast: Neighbour[NorthEast.type],
-                        northWest: Neighbour[NorthWest.type],
-                        southEast: Neighbour[SouthEast.type],
-                        southWest: Neighbour[SouthWest.type])
-
-object NeighborsSet {
-  def apply(geohash: GeoHash):NeighborsSet = {
-    NeighborsSet(
-      Neighbour(Center)(geohash),
-      Neighbour(North)(geohash),
-      Neighbour(South)(geohash),
-      Neighbour(West)(geohash),
-      Neighbour(East)(geohash),
-      Neighbour(NorthEast)(geohash),
-      Neighbour(NorthWest)(geohash),
-      Neighbour(SouthEast)(geohash),
-      Neighbour(SouthWest)(geohash)
-    )
-  }
+  lazy val geoHash:GeoHash = direction.getNeighbor(sourceGeoHash)
 }
+
+/***
+  * Represents the 8 neighbours of a given geohash in a type safe manner. It guarantees that all the neighbours
+  * are present.
+  * @param sourceGeohash
+  */
+case class NeighborsSet(sourceGeohash: GeoHash){
+
+  val center: Neighbour[Center.type] = Neighbour(Center,sourceGeohash)
+  val north: Neighbour[North.type] = Neighbour(North,sourceGeohash)
+  val south: Neighbour[South.type] = Neighbour(South,sourceGeohash)
+  val west: Neighbour[West.type] = Neighbour(West,sourceGeohash)
+  val east: Neighbour[East.type] = Neighbour(East,sourceGeohash)
+  val northEast: Neighbour[NorthEast.type] = Neighbour(NorthEast,sourceGeohash)
+  val northWest: Neighbour[NorthWest.type] = Neighbour(NorthWest,sourceGeohash)
+  val southEast: Neighbour[SouthEast.type] = Neighbour(SouthEast,sourceGeohash)
+  val southWest: Neighbour[SouthWest.type] = Neighbour(SouthWest,sourceGeohash)
+}
+
