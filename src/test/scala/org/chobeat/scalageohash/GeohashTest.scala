@@ -59,6 +59,22 @@ class GeohashTest extends FlatSpec with Matchers {
 
   }
 
+  it should "be equal to another geohash" in {
+    val g1 = GeoHash("abcde")
+    val g2 = GeoHash("abcde")
+
+    g1.shouldEqual(g2)
+
+  }
+
+  it should "be equal to string" in {
+    val g1 = GeoHash("abcde")
+    val s = "abcde"
+
+    g1.shouldEqual(s)
+
+  }
+
   "GeoHash centroid" should "be the center point of the box corresponding to a geohash" in {
     val geohash = GeoHash("5667gf")
     val (lat, lon): (Double, Double) = geohash.centroid
@@ -78,4 +94,13 @@ class GeohashTest extends FlatSpec with Matchers {
       .geohashString)
 
   }
+  it should "the original geohash" in {
+    val geohash = GeoHash("gbsuv")
+    val neighbour=GeoHash.getNeighbour(geohash,North)
+
+    geohash.shouldEqual(GeoHash.getNeighbour(neighbour,South))
+
+  }
+
+
 }

@@ -21,9 +21,17 @@ class GeoHash(val geohashString: String) {
 
   lazy val centroid: GeoPoint = GeoHash.boxMid(boxRange)
 
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case s:String => s.equals(geohashString)
+    case x:GeoHash=> x.geohashString.equals(geohashString)
+    case _=>false
+
+  }
+
   lazy val neighbors: NeighborsSet = NeighborsSet(geohashString)
 
   override def toString: String = geohashString
+
 }
 
 object GeoHash {
