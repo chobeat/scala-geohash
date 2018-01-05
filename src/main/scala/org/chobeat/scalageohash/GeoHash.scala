@@ -171,6 +171,10 @@ object GeoHash {
     new GeoHash(geohash)
   }
 
+  def encodeGeohash(lat:Double,lon:Double, length:Int):GeoHash =
+    encodeGeohash(GeoPoint(lat, lon),length)
+
+
   private def decodeGeohashRec(geoHash: String,
                                ranges: BoxRange,
                                isEven: Boolean): BoxRange = {

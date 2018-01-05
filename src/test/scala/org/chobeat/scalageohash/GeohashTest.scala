@@ -23,6 +23,12 @@ class GeohashTest extends FlatSpec with Matchers {
     g.geohashString should be("7ezmnuvz79pr")
 
   }
+  it should "accept lat and lon values too" in {
+    val g: GeoHash = GeoHash.encodeGeohash(-23, -12, 12)
+    g.geohashString should be("7ezmnuvz79pr")
+
+  }
+
 
   "decodeGeoHash" should "return a valid GeoPoint for first cell geohash" in {
     val geohash = "00000000000000000000000"
