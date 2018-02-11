@@ -2,7 +2,7 @@ scala-geohash aims to provide the basic tools to work with Geohashes in idiomati
 
 **Basic Usage**
 
-*Encoding*
+*Encode a point as GeoHash*
 
 ```scala
 import org.chobeat.scalageohash.GeoHash
@@ -19,7 +19,7 @@ val p = GeoPoint(-90.0, -180.00)
 GeoHash.encodeGeohash(p, precision)
 ```
 
-*Decoding*
+*Decode a GeoHash*
 
 
 ```scala
@@ -29,3 +29,25 @@ import org.chobeat.scalageohash.GeoHash.BoxRange
 val geohash = "5667gf"
 val ((latW, latE), (lonN, lonS)): BoxRange = GeoHash.decodeGeohash(geohash)
 ```
+
+*Get the neighbour of a GeoHash*
+
+
+```scala
+import org.chobeat.scalageohash.{GeoHash,GeoPoint}
+import org.chobeat.scalageohash.Direction._
+
+val geohash = GeoHash("gbsuv")
+val neighbour=GeoHash.getNeighbour(geohash,North)
+```
+
+*Get all the neighbours of a GeoHash*
+
+
+```scala
+import org.chobeat.scalageohash.{GeoHash,GeoPoint}
+
+val geohash = GeoHash("gbsuv")
+val neighbour=GeoHash.getNeighbourSet(geohash)
+```
+
