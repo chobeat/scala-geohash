@@ -89,24 +89,6 @@ class GeohashTest extends FlatSpec with Matchers {
 
   }
 
-  "Geohash getNeighbours" should "return a valid neighbour" in {
-    val directions: List[Direction] = List(North, South, East, West)
-    val geoHash = "gbsuv"
-    val neighbours = List("gbsvj", "gbsut", "gbsuy", "gbsuu" )
-    for {
-      (direction, neighbour) <- directions zip neighbours
-    } neighbour.shouldEqual(GeoHash
-      .getNeighbour(geoHash, direction)
-      .geohashString)
-
-  }
-  it should "the original geohash" in {
-    val geohash = GeoHash("gbsuv")
-    val neighbour=GeoHash.getNeighbour(geohash,North)
-
-    geohash.shouldEqual(GeoHash.getNeighbour(neighbour,South))
-
-  }
 
 
 }

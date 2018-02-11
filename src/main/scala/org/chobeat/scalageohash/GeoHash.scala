@@ -22,9 +22,9 @@ class GeoHash(val geohashString: String) {
   lazy val centroid: GeoPoint = GeoHash.boxMid(boxRange)
 
   override def equals(obj: scala.Any): Boolean = obj match {
-    case s:String => s.equals(geohashString)
-    case x:GeoHash=> x.geohashString.equals(geohashString)
-    case _=>false
+    case s: String => s.equals(geohashString)
+    case x: GeoHash => x.geohashString.equals(geohashString)
+    case _ => false
 
   }
 
@@ -48,6 +48,7 @@ object GeoHash {
 
   /**
     * Computes the middle value of a Range
+    *
     * @param range
     * @return
     */
@@ -56,6 +57,7 @@ object GeoHash {
 
   /**
     * Computes the center point of a BoxRange
+    *
     * @param boxRange
     * @return
     */
@@ -65,10 +67,11 @@ object GeoHash {
   }
 
   /**
-    *  Splits a range given the value of the coordinate along which we want to split the range
-    * @param x a coordinate of the point to encode
+    * Splits a range given the value of the coordinate along which we want to split the range
+    *
+    * @param x     a coordinate of the point to encode
     * @param range the range to split
-    * @param mid the middle value of the range to split
+    * @param mid   the middle value of the range to split
     * @return a split range
     */
   private def splitRangeByValue(x: Double,
@@ -83,7 +86,8 @@ object GeoHash {
   }
 
   /**
-    *  Splits a range given the bit used for decoding the current digit
+    * Splits a range given the bit used for decoding the current digit
+    *
     * @param bit
     * @param range the range to split
     * @return
@@ -110,7 +114,7 @@ object GeoHash {
       (splitRangeByValue(changingCoord, changingRange, mid), staticRange)
 
     val newIndex = (base32CharIndex << 1) | (if (changingCoord >= mid) 1
-                                             else 0)
+    else 0)
 
     val adjustedRange = if (isEven) newRanges.swap else newRanges
 
@@ -132,20 +136,20 @@ object GeoHash {
 
       if (bit < 4)
         encodeGeohashRec(point,
-                         partialGeohash,
-                         newRanges,
-                         geohashLength,
-                         !isEven,
-                         bit + 1,
-                         newIndex)
+          partialGeohash,
+          newRanges,
+          geohashLength,
+          !isEven,
+          bit + 1,
+          newIndex)
       else
         encodeGeohashRec(point,
-                         partialGeohash + BASE_32.charAt(newIndex),
-                         newRanges,
-                         geohashLength,
-                         !isEven,
-                         bit = 0,
-                         base32CharIndex = 0)
+          partialGeohash + BASE_32.charAt(newIndex),
+          newRanges,
+          geohashLength,
+          !isEven,
+          bit = 0,
+          base32CharIndex = 0)
     }
 
   }
@@ -154,7 +158,8 @@ object GeoHash {
 
   /**
     * Encodes a GeoPoint as a 32-bit geohash
-    * @param point a point to encode
+    *
+    * @param point  a point to encode
     * @param length precision to use for encoding
     * @return
     */
@@ -162,17 +167,17 @@ object GeoHash {
     val rangeLat: Range = (-90.0, 90.0)
     val rangeLon: Range = (-180.0, 180.0)
     val geohash: String = encodeGeohashRec(point,
-                                           "",
-                                           (rangeLat, rangeLon),
-                                           isEven = true,
-                                           bit = 0,
-                                           base32CharIndex = 0,
-                                           geohashLength = length)
+      "",
+      (rangeLat, rangeLon),
+      isEven = true,
+      bit = 0,
+      base32CharIndex = 0,
+      geohashLength = length)
     new GeoHash(geohash)
   }
 
-  def encodeGeohash(lat:Double,lon:Double, length:Int):GeoHash =
-    encodeGeohash(GeoPoint(lat, lon),length)
+  def encodeGeohash(lat: Double, lon: Double, length: Int): GeoHash =
+    encodeGeohash(GeoPoint(lat, lon), length)
 
 
   private def decodeGeohashRec(geoHash: String,
@@ -191,7 +196,8 @@ object GeoHash {
 
   /**
     * Split a range given a digit in a geohash
-    * @param index the index in base32 of the digit
+    *
+    * @param index  the index in base32 of the digit
     * @param ranges the current lat-lon ranges
     * @param isEven
     * @param bitStep
@@ -220,6 +226,7 @@ object GeoHash {
 
   /**
     * Decodes a geohash
+    *
     * @param geohash
     * @return the corresponding box represented as a lat range and lon range pair
     */
@@ -233,13 +240,13 @@ object GeoHash {
 
   val neighbor: Map[Direction, List[String]] = Map(
     North -> List("p0r21436x8zb9dcf5h7kjnmqesgutwvy",
-                  "bc01fg45238967deuvhjyznpkmstqrwx"),
+      "bc01fg45238967deuvhjyznpkmstqrwx"),
     South -> List("14365h7k9dcfesgujnmqp0r2twvyx8zb",
-                  "238967debc01fg45kmstqrwxuvhjyznp"),
+      "238967debc01fg45kmstqrwxuvhjyznp"),
     East -> List("bc01fg45238967deuvhjyznpkmstqrwx",
-                 "p0r21436x8zb9dcf5h7kjnmqesgutwvy"),
+      "p0r21436x8zb9dcf5h7kjnmqesgutwvy"),
     West -> List("238967debc01fg45kmstqrwxuvhjyznp",
-                 "14365h7k9dcfesgujnmqp0r2twvyx8zb")
+      "14365h7k9dcfesgujnmqp0r2twvyx8zb")
   )
   val border: Map[Direction, List[String]] = Map(
     North -> List("prxz", "bcfguvyz"),
@@ -268,4 +275,6 @@ object GeoHash {
       parent + neighbourLastDigit
     }
   }
+
+  def getNeighbourSet(geoHash: GeoHash): NeighborsSet = NeighborsSet(geoHash)
 }
