@@ -3,7 +3,7 @@ import ImplicitConversions._
 import Directions._
 case class Neighbour[T <: Direction](direction: Direction,sourceGeoHash: GeoHash){
 
-  lazy val geoHash:GeoHash = direction.getNeighbor(sourceGeoHash)
+  lazy val geoHash:GeoHash = direction.getNeighbour(sourceGeoHash)
 }
 
 /***
@@ -23,4 +23,3 @@ case class NeighborsSet(sourceGeohash: GeoHash){
   val southEast: Neighbour[SouthEast.type] = Neighbour(SouthEast,sourceGeohash)
   val southWest: Neighbour[SouthWest.type] = Neighbour(SouthWest,sourceGeohash)
 }
-

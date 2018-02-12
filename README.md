@@ -39,7 +39,7 @@ import org.chobeat.scalageohash.{GeoHash,GeoPoint}
 import org.chobeat.scalageohash.Directions._
 import org.chobeat.scalageohash.ImplicitConversions._
 val geohash = GeoHash("gbsuv")
-val neighbour = GeoHash.getNeighbour(geohash,North)
+val neighbour = geohash.getNeighbour(North)
 ```
 
 *Get all the neighbours of a GeoHash*
@@ -49,6 +49,6 @@ val neighbour = GeoHash.getNeighbour(geohash,North)
 import org.chobeat.scalageohash.{GeoHash,GeoPoint}
 
 val geohash = GeoHash("gbsuv")
-val neighbour = GeoHash.getNeighbourSet(geohash)
+val neighbourSet = geohash.getNeighbourSet()
 ```
 
