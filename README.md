@@ -25,9 +25,10 @@ GeoHash.encodeGeohash(p, precision)
 ```scala
 import org.chobeat.scalageohash.{GeoHash,GeoPoint}
 import org.chobeat.scalageohash.GeoHash.BoxRange
-
+import org.chobeat.scalageohash.ImplicitConversions._
 val geohash = "5667gf"
-val ((latW, latE), (lonN, lonS)): BoxRange = GeoHash.decodeGeohash(geohash)
+val ((latW, latE), (lonN, lonS)): BoxRange = GeoHash(geohash).boxRange
+val (lat,lon) = GeoHash(geohash).centroid
 ```
 
 *Get the neighbour of a GeoHash*
@@ -35,10 +36,10 @@ val ((latW, latE), (lonN, lonS)): BoxRange = GeoHash.decodeGeohash(geohash)
 
 ```scala
 import org.chobeat.scalageohash.{GeoHash,GeoPoint}
-import org.chobeat.scalageohash.Direction._
-
+import org.chobeat.scalageohash.Directions._
+import org.chobeat.scalageohash.ImplicitConversions._
 val geohash = GeoHash("gbsuv")
-val neighbour=GeoHash.getNeighbour(geohash,North)
+val neighbour = GeoHash.getNeighbour(geohash,North)
 ```
 
 *Get all the neighbours of a GeoHash*
@@ -48,6 +49,6 @@ val neighbour=GeoHash.getNeighbour(geohash,North)
 import org.chobeat.scalageohash.{GeoHash,GeoPoint}
 
 val geohash = GeoHash("gbsuv")
-val neighbour=GeoHash.getNeighbourSet(geohash)
+val neighbour = GeoHash.getNeighbourSet(geohash)
 ```
 
