@@ -11,23 +11,36 @@ sealed trait Direction
    */
   val directions:List[Direction] = List(this)
   def getNeighbor(geoHash: GeoHash):GeoHash={
-    directions.foldLeft(GeoHash.getNeighbour(geoHash,Center))((g,d)=>GeoHash.getNeighbour(g,d))
+    directions.foldLeft(GeoHash.getNeighbour(geoHash,Directions.Center))((g,d)=>GeoHash.getNeighbour(g,d))
   }
 }
-case object Center extends Direction{}
-case object North extends Direction{}
-case object South extends Direction{}
-case object West extends Direction{}
-case object East extends Direction{}
-case object NorthEast extends Direction{
-  override val directions: List[Direction] = List(North,East)
-}
-case object NorthWest extends Direction{
-  override val directions: List[Direction] = List(North,West)
-}
-case object SouthEast extends Direction{
-  override val directions: List[Direction] = List(South,East)
-}
-case object SouthWest extends Direction{
-  override val directions: List[Direction] = List(South,West)
+
+object Directions {
+
+  case object Center extends Direction {}
+
+  case object North extends Direction {}
+
+  case object South extends Direction {}
+
+  case object West extends Direction {}
+
+  case object East extends Direction {}
+
+  case object NorthEast extends Direction {
+    override val directions: List[Direction] = List(North, East)
+  }
+
+  case object NorthWest extends Direction {
+    override val directions: List[Direction] = List(North, West)
+  }
+
+  case object SouthEast extends Direction {
+    override val directions: List[Direction] = List(South, East)
+  }
+
+  case object SouthWest extends Direction {
+    override val directions: List[Direction] = List(South, West)
+  }
+
 }

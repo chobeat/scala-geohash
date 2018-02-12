@@ -1,9 +1,12 @@
 package org.chobeat.scalageohash
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{FlatSpec, Matchers,PrivateMethodTester}
 import org.chobeat.scalageohash.GeoHash.BoxRange
 import ImplicitConversions._
-class GeohashTest extends FlatSpec with Matchers {
+
+
+class GeohashTest extends FlatSpec with Matchers with PrivateMethodTester {
+  val decodeGeoHashMethod = PrivateMethod[BoxRange]('decodeGeohash)
 
   "encodeGeohash" should "return a valid geohash for first cell" in {
     val p = GeoPoint(-90.0, -180.00)
@@ -32,7 +35,7 @@ class GeohashTest extends FlatSpec with Matchers {
 
   "decodeGeoHash" should "return a valid GeoPoint for first cell geohash" in {
     val geohash = "00000000000000000000000"
-    val ((latL, latR), (lonU, lonD)): BoxRange = GeoHash.decodeGeohash(geohash)
+    val ((latL, latR), (lonU, lonD)): BoxRange = GeoHash invokePrivate decodeGeoHashMethod(geohash)
     assert(latL === -90.0)
     assert(latR +- 0.1 === -90.0)
     assert(lonU === -180.0)
@@ -41,7 +44,7 @@ class GeohashTest extends FlatSpec with Matchers {
   }
   it should "return a valid GeoPoint for 1-character geohash" in {
     val geohash = "0"
-    val ((latL, latR), (lonU, lonD)): BoxRange = GeoHash.decodeGeohash(geohash)
+    val ((latL, latR), (lonU, lonD)): BoxRange = GeoHash invokePrivate decodeGeoHashMethod(geohash)
     assert(latL === -90.0)
     assert(latR === -45.0)
     assert(lonU === -180.0)
@@ -51,7 +54,7 @@ class GeohashTest extends FlatSpec with Matchers {
 
   it should "return a valid GeoPoint for a given geohash" in {
     val geohash = "5667gf"
-    val ((latL, latR), (lonU, lonD)): BoxRange = GeoHash.decodeGeohash(geohash)
+    val ((latL, latR), (lonU, lonD)): BoxRange = GeoHash invokePrivate decodeGeoHashMethod(geohash)
     assert(latL +- 0.1 === -76.6)
     assert(latR +- 0.1 === -76.7)
     assert(lonU +- 1 === -30.0)

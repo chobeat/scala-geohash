@@ -2,6 +2,7 @@ package org.chobeat.scalageohash
 
 import org.scalatest.{FlatSpec, Matchers}
 import ImplicitConversions._
+import Directions._
 
 class NeighborsTest extends FlatSpec with Matchers {
   "NeighborsSet" should "return all the neighboring geohash" in {
@@ -44,5 +45,4 @@ class NeighborsTest extends FlatSpec with Matchers {
     GeoHash.getNeighbourSet(geohash) shouldEqual NeighborsSet(geohash)
 
   }
-
 }

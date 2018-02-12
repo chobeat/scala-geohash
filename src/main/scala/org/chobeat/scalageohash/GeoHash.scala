@@ -2,6 +2,7 @@ package org.chobeat.scalageohash
 
 import ImplicitConversions._
 import org.chobeat.scalageohash.GeoHash.BoxRange
+import Directions._
 
 class GeoHash(val geohashString: String) {
   lazy val boxRange: BoxRange = GeoHash.decodeGeohash(geohashString)
@@ -230,7 +231,7 @@ object GeoHash {
     * @param geohash
     * @return the corresponding box represented as a lat range and lon range pair
     */
-  def decodeGeohash(geohash: String): BoxRange = {
+  private def decodeGeohash(geohash: String): BoxRange = {
     val rangeLat: Range = (-90.0, 90.0)
     val rangeLon: Range = (-180.0, 180.0)
 

@@ -1,5 +1,6 @@
 package org.chobeat.scalageohash
 import ImplicitConversions._
+import Directions._
 case class Neighbour[T <: Direction](direction: Direction,sourceGeoHash: GeoHash){
 
   lazy val geoHash:GeoHash = direction.getNeighbor(sourceGeoHash)
